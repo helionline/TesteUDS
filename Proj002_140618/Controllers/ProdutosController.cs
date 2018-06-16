@@ -6,18 +6,19 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Proj002_140618.Models;
+using Proj002_140618.Persistence;
+using Proj002_140618.Entidades;
 
 namespace Proj002_140618.Controllers
 {
     public class ProdutosController : Controller
     {
-        private ModelContext db = new ModelContext();
+        private Produtos persistencia = new Produtos();
 
         // GET: Produtos
         public ActionResult Index()
         {
-            return View(db.Produtos.ToList());
+            return View(persistencia.List());
         }
 
         // GET: Produtos/Details/5
@@ -27,7 +28,7 @@ namespace Proj002_140618.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Produto produto = db.Produtos.Find(id);
+            Produto produto = persistencia.Get(id);
             if (produto == null)
             {
                 return HttpNotFound();
@@ -50,8 +51,7 @@ namespace Proj002_140618.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Produtos.Add(produto);
-                db.SaveChanges();
+                persistencia.Add(produto);
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +65,7 @@ namespace Proj002_140618.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Produto produto = db.Produtos.Find(id);
+            Produto produto = persistencia.Get(id);
             if (produto == null)
             {
                 return HttpNotFound();
@@ -82,8 +82,7 @@ namespace Proj002_140618.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(produto).State = EntityState.Modified;
-                db.SaveChanges();
+                persistencia.Edit(produto);
                 return RedirectToAction("Index");
             }
             return View(produto);
@@ -96,7 +95,7 @@ namespace Proj002_140618.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Produto produto = db.Produtos.Find(id);
+            Produto produto = persistencia.Get(id);
             if (produto == null)
             {
                 return HttpNotFound();
@@ -109,35 +108,23 @@ namespace Proj002_140618.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Produto produto = db.Produtos.Find(id);
-            db.Produtos.Remove(produto);
-            db.SaveChanges();
+            Produto produto = persistencia.Get(id);
+            persistencia.Delete(produto);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         public ActionResult PesquisaProduto(string CodigoProduto, string NomeProduto)
         {
-            var resultado = db.Produtos.AsQueryable();
-
-            if(!string.IsNullOrEmpty(CodigoProduto))
-            {
-                resultado = resultado.Where(w => w.CodigoProduto == CodigoProduto);
-            }
-
-            if(!string.IsNullOrEmpty(NomeProduto))
-            {
-                resultado = resultado.Where(w => w.NomeProduto.Contains(NomeProduto));
-            }
-
-            return View("Index", resultado.ToList());
+            var resultado = persistencia.Search(CodigoProduto, NomeProduto);
+            return View("Index", resultado);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                db.Dispose();
+                persistencia.Dispose();
             }
             base.Dispose(disposing);
         }

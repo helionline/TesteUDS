@@ -6,18 +6,19 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Proj002_140618.Models;
+using Proj002_140618.Persistence;
+using Proj002_140618.Entidades;
 
 namespace Proj002_140618.Controllers
 {
     public class PedidosDeVendaController : Controller
     {
-        private ModelContext db = new ModelContext();
+        PedidosDeVenda persistencia = new PedidosDeVenda();
 
         // GET: PedidosDeVenda
         public ActionResult Index()
         {
-            return View(db.PedidoDeVendas.ToList());
+            return View(persistencia.List());
         }
 
         // GET: PedidosDeVenda/Details/5
@@ -27,7 +28,7 @@ namespace Proj002_140618.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PedidoDeVenda pedidoDeVenda = db.PedidoDeVendas.Find(id);
+            PedidoDeVenda pedidoDeVenda = persistencia.Get(id);
             if (pedidoDeVenda == null)
             {
                 return HttpNotFound();
@@ -39,7 +40,7 @@ namespace Proj002_140618.Controllers
         public ActionResult Create()
         {
             PedidoDeVenda novoPedido = new PedidoDeVenda();
-            novoPedido.NumeroPedido = ObtemProximoNroPedido();
+            novoPedido.NumeroPedido = persistencia.ObtemProximoNroPedido();
             novoPedido.DataEmissao = DateTime.Now;
             novoPedido.PedidoPronto = StatusPedido.PedidoIncompleto;
             PreparaListaDeClientes();
@@ -55,9 +56,7 @@ namespace Proj002_140618.Controllers
             if (ModelState.IsValid)
             {
                 pedidoDeVenda.PedidoPronto = StatusPedido.PedidoIncompleto;
-                db.PedidoDeVendas.Add(pedidoDeVenda);
-                db.SaveChanges();
-                //return RedirectToAction("Index");
+                persistencia.Add(pedidoDeVenda);
                 return RedirectToAction("Create", "ItensPedidosDeVenda", new { idPedido = pedidoDeVenda.IdPedidoVenda });
             }
 
@@ -72,7 +71,7 @@ namespace Proj002_140618.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PedidoDeVenda pedidoDeVenda = db.PedidoDeVendas.Find(id);
+            PedidoDeVenda pedidoDeVenda = persistencia.Get(id);
             if (pedidoDeVenda == null)
             {
                 return HttpNotFound();
@@ -87,12 +86,11 @@ namespace Proj002_140618.Controllers
         [HttpPost]
         public ActionResult Edit([Bind(Include = "IdPedidoVenda,IdCliente,NumeroPedido,DataEmissao,ValorTotal")] PedidoDeVenda pedidoDeVenda)
         {
-            bool possuiItens = db.ItemPedidoDeVendas.Any(a => a.IdPedidoVenda == pedidoDeVenda.IdPedidoVenda);
+            bool possuiItens = persistencia.GetItemPedidoDeVenda().Any(a => a.IdPedidoVenda == pedidoDeVenda.IdPedidoVenda);
             if (ModelState.IsValid && possuiItens)
             {
                 pedidoDeVenda.PedidoPronto = StatusPedido.PedidoCompleto;
-                db.Entry(pedidoDeVenda).State = EntityState.Modified;
-                db.SaveChanges();
+                persistencia.Edit(pedidoDeVenda);
                 return RedirectToAction("Index");
             }
             pedidoDeVenda.PedidoPronto = StatusPedido.PedidoIncompleto;
@@ -107,7 +105,7 @@ namespace Proj002_140618.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PedidoDeVenda pedidoDeVenda = db.PedidoDeVendas.Find(id);
+            PedidoDeVenda pedidoDeVenda = persistencia.Get(id);
             if (pedidoDeVenda == null)
             {
                 return HttpNotFound();
@@ -119,57 +117,35 @@ namespace Proj002_140618.Controllers
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
-            PedidoDeVenda pedidoDeVenda = db.PedidoDeVendas.Find(id);
-            db.PedidoDeVendas.Remove(pedidoDeVenda);
-            db.SaveChanges();
+            PedidoDeVenda pedidoDeVenda = persistencia.Get(id);
+            persistencia.Delete(pedidoDeVenda);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         public ActionResult PesquisaPedido(string NomeCliente, decimal? NumeroPedido, DateTime? DataEmissao)
         {
-            var resultado = db.PedidoDeVendas.AsQueryable();
-
-            if (!string.IsNullOrEmpty(NomeCliente))
-            {
-                resultado = resultado.Where(w => w.Cliente.NomePessoa.Contains(NomeCliente));
-            }
-
-            if (NumeroPedido.GetValueOrDefault(0) != 0)
-            {
-                resultado = resultado.Where(w => w.NumeroPedido == NumeroPedido.Value);
-            }
-
-            if (DataEmissao.HasValue)
-            {
-                resultado = resultado.Where(w => w.DataEmissao == DataEmissao.Value);
-            }
-
-            return View("Index", resultado.ToList());
+            var resultado = persistencia.Search(NomeCliente, NumeroPedido, DataEmissao);
+            return View("Index", resultado);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                db.Dispose();
+                persistencia.Dispose();
             }
             base.Dispose(disposing);
         }
 
         private void PreparaListaDeClientes(object clienteSelecionado = null)
         {
-            var qCliente = from c in db.Pessoas
+            var qCliente = from c in persistencia.GetPessoas()
                            orderby c.NomePessoa
                            select c;
 
             ViewBag.listaClientes = new SelectList(qCliente, "IdPessoa", "NomePessoa", clienteSelecionado);
         }
         
-        private int ObtemProximoNroPedido()
-        {
-            var proxNro = db.PedidoDeVendas.Max(pv => pv.NumeroPedido);
-            return proxNro + 1;
-        }
     }
 }

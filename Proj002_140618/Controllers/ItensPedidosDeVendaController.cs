@@ -6,19 +6,20 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Proj002_140618.Models;
+using Proj002_140618.Persistence;
+using Proj002_140618.Entidades;
 
 namespace Proj002_140618.Controllers
 {
     public class ItensPedidosDeVendaController : Controller
     {
-        private ModelContext db = new ModelContext();
+        private ItensPedidoDeVenda persistencia = new ItensPedidoDeVenda();
 
         // GET: ItensPedidosDeVenda
         public ActionResult Index()
         {
-            var itemPedidoDeVendas = db.ItemPedidoDeVendas.Include(i => i.PedidoDeVenda).Include(i => i.Produto);
-            return View(itemPedidoDeVendas.ToList());
+            var itemPedidoDeVendas = persistencia.FullList();
+            return View(itemPedidoDeVendas);
         }
 
         // GET: ItensPedidosDeVenda/Details/5
@@ -28,7 +29,7 @@ namespace Proj002_140618.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ItemPedidoDeVenda itemPedidoDeVenda = db.ItemPedidoDeVendas.Find(id);
+            ItemPedidoDeVenda itemPedidoDeVenda = persistencia.Get(id);
             if (itemPedidoDeVenda == null)
             {
                 return HttpNotFound();
@@ -53,8 +54,7 @@ namespace Proj002_140618.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.ItemPedidoDeVendas.Add(itemPedidoDeVenda);
-                db.SaveChanges();
+                persistencia.Add(itemPedidoDeVenda);
                 return RedirectToAction("Edit", "PedidosDeVenda", new { id = itemPedidoDeVenda.IdPedidoVenda });
             }
 
@@ -69,7 +69,7 @@ namespace Proj002_140618.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ItemPedidoDeVenda itemPedidoDeVenda = db.ItemPedidoDeVendas.Find(id);
+            ItemPedidoDeVenda itemPedidoDeVenda = persistencia.Get(id);
             if (itemPedidoDeVenda == null)
             {
                 return HttpNotFound();
@@ -86,8 +86,7 @@ namespace Proj002_140618.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(itemPedidoDeVenda).State = EntityState.Modified;
-                db.SaveChanges();
+                persistencia.Edit(itemPedidoDeVenda);
                 return RedirectToAction("Edit", "PedidosDeVenda", new { id = itemPedidoDeVenda.IdPedidoVenda });
             }
             PreparaListaDeProdutos(itemPedidoDeVenda.IdProduto);
@@ -101,7 +100,7 @@ namespace Proj002_140618.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ItemPedidoDeVenda itemPedidoDeVenda = db.ItemPedidoDeVendas.Find(id);
+            ItemPedidoDeVenda itemPedidoDeVenda = persistencia.Get(id);
             if (itemPedidoDeVenda == null)
             {
                 return HttpNotFound();
@@ -113,9 +112,8 @@ namespace Proj002_140618.Controllers
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
-            ItemPedidoDeVenda itemPedidoDeVenda = db.ItemPedidoDeVendas.Find(id);
-            db.ItemPedidoDeVendas.Remove(itemPedidoDeVenda);
-            db.SaveChanges();
+            ItemPedidoDeVenda itemPedidoDeVenda = persistencia.Get(id);
+            persistencia.Delete(itemPedidoDeVenda);
             return RedirectToAction("Edit", "PedidosDeVenda", new { id = itemPedidoDeVenda.IdPedidoVenda });
         }
 
@@ -126,7 +124,7 @@ namespace Proj002_140618.Controllers
             {
                 try
                 {
-                    precoUnitario = db.Produtos.Find(idProduto.Value).PrecoUnitario;
+                    precoUnitario = persistencia.GetProdutos().Single(s => s.IdProduto == idProduto.Value).PrecoUnitario;
                 }
                 catch (Exception e) { }
             }
@@ -136,7 +134,7 @@ namespace Proj002_140618.Controllers
 
         private void PreparaListaDeProdutos(object produtoSelecionado = null)
         {
-            var qProduto = from p in db.Produtos
+            var qProduto = from p in persistencia.GetProdutos()
                            orderby p.CodigoProduto
                            select p;
 
@@ -147,7 +145,7 @@ namespace Proj002_140618.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                persistencia.Dispose();
             }
             base.Dispose(disposing);
         }

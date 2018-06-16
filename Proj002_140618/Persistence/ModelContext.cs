@@ -1,9 +1,10 @@
-namespace Proj002_140618.Models
+namespace Proj002_140618.Persistence
 {
     using System;
     using System.Data.Entity;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
+    using Entidades;
 
     public partial class ModelContext : DbContext
     {

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Proj002_140618.Models;
+using Proj002_140618.Entidades;
+using Proj002_140618.Persistence;
 
 namespace UnitTests
 {

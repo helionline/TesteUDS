@@ -1,4 +1,4 @@
-namespace Proj002_140618.Models
+namespace Proj002_140618.Entidades
 {
     using System;
     using System.Collections.Generic;

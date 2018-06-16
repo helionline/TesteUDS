@@ -6,18 +6,19 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Proj002_140618.Models;
+using Proj002_140618.Persistence;
+using Proj002_140618.Entidades;
 
 namespace Proj002_140618.Controllers
 {
     public class PessoasController : Controller
     {
-        private ModelContext db = new ModelContext();
+        private Pessoas persistencia = new Pessoas();
 
         // GET: Pessoas
         public ActionResult Index()
         {
-            return View(db.Pessoas.ToList());
+            return View(persistencia.List());
         }
 
         // GET: Pessoas/Details/5
@@ -27,7 +28,7 @@ namespace Proj002_140618.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Pessoa pessoa = db.Pessoas.Find(id);
+            Pessoa pessoa = persistencia.Get(id);
             if (pessoa == null)
             {
                 return HttpNotFound();
@@ -50,8 +51,7 @@ namespace Proj002_140618.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Pessoas.Add(pessoa);
-                db.SaveChanges();
+                persistencia.Add(pessoa);
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +65,7 @@ namespace Proj002_140618.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Pessoa pessoa = db.Pessoas.Find(id);
+            Pessoa pessoa = persistencia.Get(id);
             if (pessoa == null)
             {
                 return HttpNotFound();
@@ -82,8 +82,7 @@ namespace Proj002_140618.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(pessoa).State = EntityState.Modified;
-                db.SaveChanges();
+                persistencia.Edit(pessoa);
                 return RedirectToAction("Index");
             }
             return View(pessoa);
@@ -96,7 +95,7 @@ namespace Proj002_140618.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Pessoa pessoa = db.Pessoas.Find(id);
+            Pessoa pessoa = persistencia.Get(id);
             if (pessoa == null)
             {
                 return HttpNotFound();
@@ -109,35 +108,23 @@ namespace Proj002_140618.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Pessoa pessoa = db.Pessoas.Find(id);
-            db.Pessoas.Remove(pessoa);
-            db.SaveChanges();
+            Pessoa pessoa = persistencia.Get(id);
+            persistencia.Delete(pessoa);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         public ActionResult PesquisaPessoa(string NomePessoa, DateTime? DataNascimento)
         {
-            var resultado = db.Pessoas.AsQueryable();
-
-            if (!string.IsNullOrEmpty(NomePessoa))
-            {
-                resultado = resultado.Where(w => w.NomePessoa.Contains(NomePessoa));
-            }
-
-            if (DataNascimento.HasValue)
-            {
-                resultado = resultado.Where(w => w.DataNascimento == DataNascimento.Value);
-            }
-
-            return View("Index", resultado.ToList());
+            var resultado = persistencia.Search(NomePessoa, DataNascimento);
+            return View("Index", resultado);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                db.Dispose();
+                persistencia.Dispose();
             }
             base.Dispose(disposing);
         }

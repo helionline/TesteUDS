@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Proj002_140618.Models
+namespace Proj002_140618.Entidades
 {
     public enum StatusPedido
     {
