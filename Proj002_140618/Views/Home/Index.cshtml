@@ -1,0 +1,27 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Sistema</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Produtos", "Index", "Produtos", null, null)
+    </p>
+
+    <p>
+        @Html.ActionLink("Pessoas", "Index", "Pessoas", null, null)
+    </p>
+
+    <p>
+        @Html.ActionLink("Pedidos de Venda", "Index", "PedidosDeVenda", null, null)
+    </p>
+</body>
+</html>

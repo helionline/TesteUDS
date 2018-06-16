@@ -1,0 +1,44 @@
+﻿@model Proj002_140618.Models.Pessoa
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Detalhes</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div>
+        <h4>Pessoa</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.NomePessoa)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.NomePessoa)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.DataNascimento)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.DataNascimento)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Editar", "Edit", new { id = Model.IdPessoa }) |
+        @Html.ActionLink("Voltar", "Index")
+    </p>
+</body>
+</html>

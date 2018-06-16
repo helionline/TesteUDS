@@ -1,0 +1,76 @@
+﻿@model IEnumerable<Proj002_140618.Models.Produto>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Produtos</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Inicio", "Index", "Home", null, null)
+    </p>
+    <p>
+        @Html.ActionLink("Cadastrar Novo Produto", "Create")
+    </p>
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CodigoProduto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NomeProduto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrecoUnitario)
+            </th>
+            <th></th>
+        </tr>
+
+        @using (Html.BeginForm("PesquisaProduto", "Produtos"))
+        {
+            <tr>
+                <th>
+                    @Html.TextBox("CodigoProduto")
+                </th>
+                <th>
+                    @Html.TextBox("NomeProduto")
+                </th>
+                <th></th>
+                <th>
+                    <input type="submit" value="Pesquisar" class="btn btn-default" />
+                </th>
+                <th></th>
+            </tr>
+        }
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CodigoProduto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NomeProduto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrecoUnitario)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id=item.IdProduto }) |
+                @Html.ActionLink("Detalhes", "Details", new { id=item.IdProduto }) |
+                @Html.ActionLink("Remover", "Delete", new { id=item.IdProduto })
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

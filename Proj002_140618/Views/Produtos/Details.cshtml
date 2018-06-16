@@ -1,0 +1,52 @@
+﻿@model Proj002_140618.Models.Produto
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Detalhes do Produto</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div>
+        <h4>Produto</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.CodigoProduto)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.CodigoProduto)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.NomeProduto)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.NomeProduto)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.PrecoUnitario)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.PrecoUnitario)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Editar", "Edit", new { id = Model.IdProduto }) |
+        @Html.ActionLink("Voltar", "Index")
+    </p>
+</body>
+</html>

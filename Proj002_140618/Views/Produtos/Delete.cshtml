@@ -1,0 +1,56 @@
+﻿@model Proj002_140618.Models.Produto
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Remover Produto</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <h3>Confirma a remoção deste produto?</h3>
+    <div>
+        <h4>Produto</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.CodigoProduto)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.CodigoProduto)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.NomeProduto)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.NomeProduto)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.PrecoUnitario)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.PrecoUnitario)
+            </dd>
+    
+        </dl>
+    
+        @using (Html.BeginForm()) {
+            <div class="form-actions no-color">
+                <input type="submit" value="Remover" class="btn btn-default" /> |
+                @Html.ActionLink("Voltar", "Index")
+            </div>
+        }
+    </div>
+</body>
+</html>

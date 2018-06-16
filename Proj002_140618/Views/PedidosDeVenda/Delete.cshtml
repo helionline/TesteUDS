@@ -1,0 +1,64 @@
+﻿@model Proj002_140618.Models.PedidoDeVenda
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Remover</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <h3>Confirma remoção deste Pedido de Vendas</h3>
+    <div>
+        <h4>PedidoDeVenda</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Cliente)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Cliente.NomePessoa)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.NumeroPedido)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.NumeroPedido)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.DataEmissao)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.DataEmissao)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.ValorTotal)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ValorTotal)
+            </dd>
+    
+        </dl>
+    
+        @using (Html.BeginForm()) {
+            <div class="form-actions no-color">
+                <input type="submit" value="Remover" class="btn btn-default" /> |
+                @Html.ActionLink("Voltar", "Index")
+            </div>
+        }
+    </div>
+</body>
+</html>

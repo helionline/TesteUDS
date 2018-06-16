@@ -1,0 +1,85 @@
+﻿@model IEnumerable<Proj002_140618.Models.PedidoDeVenda>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Pedidos de Venda</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Inicio", "Index", "Home", null, null)
+    </p>
+    <p>
+        @Html.ActionLink("Cadastrar Pedido de Venda", "Create")
+    </p>
+    
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Cliente)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumeroPedido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataEmissao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ValorTotal)
+            </th>
+            <th></th>
+        </tr>
+
+        @using (Html.BeginForm("PesquisaPedido", "PedidosDeVenda"))
+        {
+            <tr>
+                <th>
+                    @Html.TextBox("NomeCliente")
+                </th>
+                <th>
+                    @Html.TextBox("NumeroPedido", 0, new { @type = "number" })
+                </th>
+                <th>
+                    @Html.TextBox("DataEmissao", null, new { @type = "date" })
+                </th>
+                <th></th>
+                <th>
+                    <input type="submit" value="Pesquisar" class="btn btn-default" />
+                </th>
+                <th></th>
+            </tr>
+        }
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cliente.NomePessoa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumeroPedido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataEmissao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ValorTotal)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id=item.IdPedidoVenda }) |
+                @Html.ActionLink("Detalhes", "Details", new { id=item.IdPedidoVenda }) |
+                @Html.ActionLink("Remover", "Delete", new { id=item.IdPedidoVenda })
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

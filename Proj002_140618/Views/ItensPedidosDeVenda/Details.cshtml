@@ -1,0 +1,74 @@
+﻿@model Proj002_140618.Models.ItemPedidoDeVenda
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Detalhes</title>
+</head>
+<body>
+    <div>
+        <h4>Item do Pedido de Venda</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Produto.CodigoProduto)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Produto.CodigoProduto)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Produto.NomeProduto)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Produto.NomeProduto)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Qtde)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Qtde)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.PrecoUnitario)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.PrecoUnitario)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.PercentualDesconto)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.PercentualDesconto)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.ValorTotal)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ValorTotal)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Editar", "Edit", new { id = Model.IdItem }) |
+        @Html.ActionLink("Voltar", "Edit", "PedidosDeVenda", new { id = Model.IdPedidoVenda }, null)
+    </p>
+</body>
+</html>

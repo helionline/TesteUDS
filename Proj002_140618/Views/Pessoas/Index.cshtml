@@ -1,0 +1,69 @@
+﻿@model IEnumerable<Proj002_140618.Models.Pessoa>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Pessoas</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Inicio", "Index", "Home", null, null)
+    </p>
+    <p>
+        @Html.ActionLink("Cadastrar Pessoa", "Create")
+    </p>
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NomePessoa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataNascimento)
+            </th>
+            <th></th>
+        </tr>
+
+        @using (Html.BeginForm("PesquisaPessoa", "Pessoas"))
+        {
+            <tr>
+                <th>
+                    @Html.TextBox("NomePessoa")
+                </th>
+                <th>
+                    @Html.TextBox("DataNascimento", null, new { @type = "date" })
+                </th>
+                <th>
+                    <input type="submit" value="Pesquisar" class="btn btn-default" />
+                </th>
+                <th></th>
+            </tr>
+        }
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NomePessoa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataNascimento)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id=item.IdPessoa }) |
+                @Html.ActionLink("Detalhes", "Details", new { id=item.IdPessoa }) |
+                @Html.ActionLink("Remover", "Delete", new { id=item.IdPessoa })
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>
